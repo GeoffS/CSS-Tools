@@ -15,8 +15,8 @@ cssIdRe     = re.compile(r"#(\w+)")
 
 hexRe = re.compile(R"^[0-9a-fA-F]{6,6}$")
 
-spaceRe = re.compile(r"\s.")
-commaRe = re.compile(r",\s*")
+# spaceRe = re.compile(r"\s.")
+# commaRe = re.compile(r",\s*")
 
 
 def extractHtml(fileName, itemRe):
@@ -24,7 +24,7 @@ def extractHtml(fileName, itemRe):
     for line in open(fileName, 'r'):
         itemLists = itemRe.findall(line)
         for itemList in itemLists:
-            for item in [s.strip() for s in spaceRe.split(itemList)]:
+            for item in [s.strip() for s in str.split(itemList)]:
                 itemSet.add(item)
     return itemSet
 
@@ -55,7 +55,7 @@ def set2sortedList(s):
 if __name__ == '__main__':
     topDir = r"C:\Users\Geoff\AppData\Local\Temp"
     
-    exportDir = r"\AgWPGExport-66"
+    exportDir = r"\AgWPGExport-71"
     
     htmlFiles = [r"\index.html", r"\content\IMG_6644_large.html", r"\content\IMG_6646_large.html"]
     nHtml = len(htmlFiles)
@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
     cssClasseSets = {}
     cssIdSets = {}
-    for f in cssFiles:
+    for f in cssFiles+htmlFiles:
         cssClasseSets[f] = extractCss( topDir+exportDir+f, cssClassRe)
         cssIdSets[f] = extractCss( topDir+exportDir+f, cssIdRe)
     
@@ -109,8 +109,12 @@ if __name__ == '__main__':
     
     print "\n\n==========================================\n"
     
-    print "Unused classes in CSS:", allCssClasses.difference(allHtmlClasses)
-    print "Unused ids in CSS:", allCssIds.difference(allHtmlIds)
+    unusedCssClasses = list(allCssClasses.difference(allHtmlClasses))
+    unusedCssClasses.sort()
+    print "Unused classes in CSS:", unusedCssClasses
+    unusedCssIds = list(allCssIds.difference(allHtmlIds))
+    unusedCssIds.sort()
+    print "Unused ids in CSS:", unusedCssIds 
     
     print "\n-----------\n"
     
